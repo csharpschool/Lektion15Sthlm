@@ -1,0 +1,36 @@
+﻿@page "/"
+@using Lektion15.Classes;
+@using Lektion15.Exceptions;
+
+<PageTitle>Index</PageTitle>
+
+<p>@message</p>
+
+@code{
+    BookStore store = new();
+    string message = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            store.Add(new Book(0, "Title 2"));
+
+            var book = store.Books.Single(b => b.Id == 1);
+
+            book.Title = "New Title";
+        }
+        catch(BookException ex)
+        {
+            message = ex.Book is null ?
+                "Something went wrong." :
+                $"{ex.Message} | {ex.Book.Id} {ex.Book.Title}";
+        }
+        catch
+        {
+            message = "Something went wrong. Try again later.";
+        }
+        
+    }
+
+}

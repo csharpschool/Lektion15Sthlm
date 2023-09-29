@@ -1,0 +1,52 @@
+﻿@page "/counter"
+@using Lektion15.Classes;
+@using Lektion15.Exceptions;
+@inject Deck deck
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+<div class="btn-group" role="group" aria-label="Basic outlined example">
+    <button @onclick="@(() => deck.Get(c => c.Suit == Suits.Spades && c.Value > 3))" type="button" class="btn btn-outline-primary">Spades</button>
+    <button @onclick="@(() => deck.Get(Suits.Hearts))" type="button" class="btn btn-outline-primary">Hearts</button>
+    <button @onclick="@(() => deck.Get(Suits.Diamonds))" type="button" class="btn btn-outline-primary">Diamonds</button>
+    <button @onclick="@(() => deck.Get(Suits.Clubs))" type="button" class="btn btn-outline-primary">Clubs</button>
+    <button @onclick="@(() => deck.Get(null))" type="button" class="btn btn-outline-warning">All</button>
+</div>
+<ul>
+    @foreach (var card in deck.Cards)
+    {
+        <li>@card.Suit @card.Value</li>
+    }
+</ul>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<p>@message</p>
+
+@code {
+    private int currentCount = 0;
+    string message = string.Empty;
+
+
+    private void IncrementCount()
+    {
+        try
+        {
+            var res1 = deck.Single(null);
+            var res2 = deck.Single(d => d.Value == 4 && d.Suit == Suits.Hearts);
+            var res3 = deck.Single(d => d.Value > 25);
+            currentCount++;
+        }
+        catch(CardException ex)
+        {
+            message = ex.Message;
+        }
+        catch
+        {
+            message = "Något gick fel.";
+        }
+    }
+}
